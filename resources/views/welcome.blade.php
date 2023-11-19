@@ -1,8 +1,10 @@
 @extends('dashboard.partial.layout')
 @section('content')
 <?php 
-$totalSumExports = DB::table('exports')->sum('amount');
-$totalSumImports = DB::table('imports')->sum('amount');
+$totalSumExports_Visa = DB::table('exports')->where('transaction_type' , 1)->sum('amount');
+$totalSumImports_Visa = DB::table('imports')->where('transaction_type' , 1)->sum('amount');
+$totalSumExports_Cash = DB::table('exports')->where('transaction_type' , 0)->sum('amount');
+$totalSumImports_Cash = DB::table('imports')->where('transaction_type' , 0)->sum('amount');
 
 ?>
 <div class="col-lg-12">
@@ -19,9 +21,9 @@ $totalSumImports = DB::table('imports')->sum('amount');
             <!-- small box -->
             <div class="small-box bg-info">
               <div class="inner">
-                <h3>{{$totalSumExports}} ريال</h3>
+                <h3>{{$totalSumExports_Visa}} ريال</h3>
 
-                <p>مجموع الخارج</p>
+                <p>مجموع الخارج بالفيزا</p>
               </div>
               <div class="icon">
                 <i class="ion ion-bag"></i>
@@ -34,9 +36,9 @@ $totalSumImports = DB::table('imports')->sum('amount');
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
-                <h3>{{$totalSumImports}} ريال</h3>
+                <h3>{{$totalSumImports_Visa}} ريال</h3>
 
-                <p>مجموع الداخل</p>
+                <p>مجموع الداخل بالفيزا</p>
               </div>
               <div class="icon">
                 <i class="ion ion-stats-bars"></i>
@@ -47,12 +49,27 @@ $totalSumImports = DB::table('imports')->sum('amount');
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
+            <div class="small-box bg-danger">
+              <div class="inner">
+               
+                <h3>{{$totalSumExports_Cash}} ريال</h3>
+
+                <p>مجموع الخارج كاش</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-person-add"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
             <div class="small-box bg-warning">
               <div class="inner">
                
-                <h3>{{$totalSumExports - $totalSumImports}} ريال</h3>
+                <h3>{{$totalSumImports_Cash}} ريال</h3>
 
-                <p>الريح</p>
+                <p>مجموع الداخل كاش</p>
               </div>
               <div class="icon">
                 <i class="ion ion-person-add"></i>
@@ -61,6 +78,37 @@ $totalSumImports = DB::table('imports')->sum('amount');
             </div>
           </div>
           
+        </div>
+        <div class="row">
+        <div class="col-6 ">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3>{{$totalSumImports_Visa - $totalSumExports_Visa}} ريال</h3>
+
+                <p>صافي ربح  الفيزا</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-bag"></i>
+              </div>
+              <a href="{{route('exports-index')}}" class="small-box-footer">للتفاصيل <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+              <div class="inner">
+                <h3>{{$totalSumImports_Cash - $totalSumExports_Cash}} ريال</h3>
+
+                <p>صافي ربح الكاش</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-stats-bars"></i>
+              </div>
+              <a href="{{route('imports-index')}}" class="small-box-footer">للتفاصيل <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
         </div>
         <div class="row">
           <div class="card col-lg-12">
@@ -74,6 +122,7 @@ $totalSumImports = DB::table('imports')->sum('amount');
                         <td>البروفايل</td>
                         <td>الكمية</td>
                         <td>السبب</td>
+                        <td>طريقة الدفع</td>
                         <td>التاريخ</td>
                         <td>العمليات</td>
                     </thead>
@@ -82,8 +131,15 @@ $totalSumImports = DB::table('imports')->sum('amount');
                             <tr>
                                <td> {{ $export->id}} </td>
                                <td> {{ $export->user->name}}</td>
-                               <td> {{ $export->reason}} </td>
                                <td> {{ $export->amount}} </td>
+                               <td> {{ $export->reason}} </td>
+                               <td> 
+                                  @if($export->transaction_type == 0)
+                                    <span class="text-danger text-bold">كاش</span>
+                                  @else
+                                  <span class="text-success text-bold">فيزا</span>
+                                  @endif
+                               </td>
                                <td> {{ $export->date}}</td>
                                <td>
                                     <a  class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal{{$export->id}}">
@@ -151,6 +207,7 @@ $totalSumImports = DB::table('imports')->sum('amount');
                         <td>البروفايل</td>
                         <td>الكمية</td>
                         <td>السبب</td>
+                        <td>طريقة الدفع</td>
                         <td>التاريخ</td>
                         <td>العمليات</td>
                     </thead>
@@ -159,8 +216,15 @@ $totalSumImports = DB::table('imports')->sum('amount');
                             <tr>
                                <td> {{ $import->id}} </td>
                                <td> {{ $import->user->name}}</td>
-                               <td> {{ $import->reason}} </td>
                                <td> {{ $import->amount}} </td>
+                               <td> {{ $import->reason}} </td>
+                               <td> 
+                                  @if($export->transaction_type == 0)
+                                    <span class="text-danger text-bold">كاش</span>
+                                  @else
+                                  <span class="text-success text-bold">فيزا</span>
+                                  @endif
+                               </td>
                                <td> {{ $import->date}}</td>
                                <td>
                                     <a class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal{{$import->id}}">

@@ -49,6 +49,17 @@
                                 <input type="date" id="hijri-calendar" name="date" class="form-control"  aria-describedby="emailHelp">
                               
                             </div>
+                            <div class="mb-3">
+                                <div class="form-group">
+                                    <label for="exampleFormControlSelect1">طريقة الدفع</label>
+                                    <select class="form-control" name="transaction_type" id="exampleFormControlSelect1">
+                                    <option value="" selected>اختر طريقة الدفع</option>
+                                    <option vlaue="0">كاش</option>
+                                    <option value="1">فيزا</option>
+                                    
+                                    </select>
+                                </div>
+                            </div>
                             
                         </div>
                         <div class="modal-footer">
@@ -69,6 +80,7 @@
                         <td>البروفايل</td>
                         <td>الكمية</td>
                         <td>السبب</td>
+                        <td>طريقة الدفع</td>
                         <td>التاريخ</td>
                         <td>العمليات</td>
                     </thead>
@@ -77,8 +89,15 @@
                             <tr>
                                <td> {{ $export->id}} </td>
                                <td> {{ $export->user->name}}</td>
-                               <td> {{ $export->reason}} </td>
                                <td> {{ $export->amount}} </td>
+                               <td> {{ $export->reason}} </td>
+                               <td> 
+                                  @if($export->transaction_type == 0)
+                                    <span class="text-danger text-bold">كاش</span>
+                                  @else
+                                  <span class="text-success text-bold">فيزا</span>
+                                  @endif
+                               </td>
                                <td> {{ $export->date}}</td>
                                <td>
                                     <a  class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal{{$export->id}}">
@@ -109,6 +128,17 @@
                                                         <label for="exampleInputEmail1" class="form-label">التاريخ</label>
                                                         <input type="date" value="{{$export->date}}" id="hijri-calendar" name="date" class="form-control"  aria-describedby="emailHelp">
                                                     
+                                                    </div>
+                                                    <div class="mb-3">
+                                                    <div class="form-group">
+                                                            <label for="exampleFormControlSelect1">طريقة الدفع</label>
+                                                            <select class="form-control" name="transaction_type" id="exampleFormControlSelect1">
+                                                            <option value="" selected>اختر طريقة الدفع</option>
+                                                            <option vlaue="0">كاش</option>
+                                                            <option value="1">فيزا</option>
+                                                            
+                                                            </select>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">

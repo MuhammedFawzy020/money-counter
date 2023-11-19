@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('reason')->nullable();
             $table->double('amount')->nullable();
             $table->date('date')->nullable();
+            $table->boolean('transaction_type')->default(0)->comment('0 Cash , 1 Visa');
 
             $table->timestamps();
         });

@@ -9,7 +9,7 @@ class exports extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'reason' ,'amount' ,'date',
+        'reason' ,'amount' ,'date','transaction_type',
     ];
 
 
